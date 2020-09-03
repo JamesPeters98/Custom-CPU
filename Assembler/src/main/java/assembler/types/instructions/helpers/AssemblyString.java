@@ -1,12 +1,14 @@
 package assembler.types.instructions.helpers;
 
 import org.joou.UShort;
-import assembler.types.instructions.Instruction;
+import assembler.types.instructions.interfaces.Instruction;
 import assembler.types.values.DeterminedByte;
 import assembler.types.values.UndeterminedByte;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Stores an ASCII String in binary at the current location
@@ -29,6 +31,11 @@ public class AssemblyString extends Instruction {
             throw new RuntimeException("String must start and end with quotes \" \" invalid for String: "+ Arrays.toString(tokens));
         }
         return currentPos;
+    }
+
+    @Override
+    protected List<Pattern[]> getPatternArray() {
+        return createListPatternFromRegex("^\\\"(.*)\\\"$");
     }
 
     @Override

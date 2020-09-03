@@ -1,5 +1,6 @@
-package assembler.types.instructions;
+package assembler.types.instructions.opcodes;
 
+import assembler.types.instructions.interfaces.Instruction;
 import org.joou.UShort;
 import assembler.types.ByteFormatter;
 import assembler.types.NumberType;
@@ -7,6 +8,8 @@ import assembler.types.values.DeterminedByte;
 import assembler.types.values.UndeterminedByte;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class Store extends Instruction {
 
@@ -58,6 +61,15 @@ public class Store extends Instruction {
         }
 
         return currentPos;
+    }
+
+    @Override
+    protected List<Pattern[]> getPatternArray() {
+        switch (type){
+            case ADDRESS_POINTED_BY_16: return createListPatternFromRegex("^r([0-9]+)", "^.*$");
+            case INDEXED_ADDRESS: return createListPatternFromRegex("^(.*),r([0-9]+)$");
+        }
+        return createListPatternFromRegex();
     }
 
     @Override

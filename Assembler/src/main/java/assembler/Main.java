@@ -4,7 +4,7 @@ import org.joou.UShort;
 import assembler.output.CArrayOutput;
 import assembler.exceptions.InvalidOpCodeException;
 import assembler.types.values.UndeterminedByte;
-import assembler.types.instructions.OpCode;
+import assembler.types.instructions.enums.OpCode;
 import assembler.types.labels.LabelType;
 
 import java.io.File;
