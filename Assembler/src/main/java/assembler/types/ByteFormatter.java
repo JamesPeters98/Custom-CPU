@@ -12,7 +12,7 @@ public class ByteFormatter {
     private static final String HEX = "$";
     private static final String BINARY = "%";
     private static final String ASCII = "\"";
-    private static final String CONSTANT = "^([A-Z_]*)$";
+    private static final String CONSTANT = "^([A-Z_])([A-Z_0-9]*)$";
     private static final String LABEL = "^[A-Za-z.]";
     // Decimal has no prefix.
 
@@ -20,7 +20,9 @@ public class ByteFormatter {
     private static final Pattern constant = Pattern.compile(CONSTANT);
 
     public static DeterminedByte getByte(String value){
+        // Converts the value from a constant. If the value isn't a constant the original value is returned.
         value = Constant.convert(value);
+        // Remove # as that is only used to decide which instruction is used with this number.
         value = value.replaceAll("#", "");
         System.out.println("Number: "+value);
         if (value.startsWith(HEX)){

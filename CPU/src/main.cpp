@@ -44,6 +44,8 @@ void call(uint8_t opcode);
 void ret();
 void ret_if_zero(boolean isZero);
 
+void rotate_left();
+
 ////////////////////////////
 // REGISTERS
 uint16_t cpu_register[8];
@@ -53,6 +55,7 @@ uint16_t register_16bit;
 /////////////////////////////
 // FLAGS
 bool ZERO = false;
+bool CARRY = false;
 /////////////////////////////
 
 // Currently this is needed to read data from the arduino rom
@@ -87,6 +90,10 @@ void setup() {
 
   // Initialise Stack pointer to 0xFFFE
   STACK_POINTER = 0x12FF;
+
+  // Reset flags
+  ZERO = false;
+  CARRY = false;
 
   // Currently using the i2c LCD library. 
   lcd.setup();
@@ -204,6 +211,9 @@ void runCpuCycle(uint8_t code) {
   case 0x71:
     ret();
     break;
+
+  case 0x72:
+    rotate_left();
 
   case 0xA8:
     ret_if_zero(true);
@@ -370,6 +380,12 @@ void nop(uint8_t opcode){
 void stop(uint8_t opcode){
   Serial.println("Halting CPU!");
   isHalted = true;
+
+  Serial.println("Ram: ");
+  Serial.println("0x0f00: "+String(bus.readMemory(0x0f00), BIN));
+  Serial.println("0x0f01: "+String(bus.readMemory(0x0f01), BIN));
+  Serial.println("0x0f02: "+String(bus.readMemory(0x0f02), BIN));
+  Serial.println("0x0f03: "+String(bus.readMemory(0x0f03), BIN));
 
   // for(uint16_t i = 0x401; i < 0x450; i++){
   //   uint8_t vram = bus.readMemory(i);
@@ -554,5 +570,27 @@ void ret(){
 void ret_if_zero(boolean isZero){
   if(ZERO == isZero) ret();
   else PC++;
+}
+
+void rotate_left() {
+  PC++;
+  uint8_t LSB = bus.readMemory(PC);
+  onCycleEnd();
+  onCycleStart();
+  PC++;
+  uint8_t MSB = bus.readMemory(PC);
+  onCycleStart();
+
+  uint16_t word = word(MSB, LSB);
+  uint8_t byte = bus.readMemory(word);
+  Serial.println("Rotating byte: "+String(byte, BIN));
+  uint8_t rotated = byte << 1;
+  Serial.println("Rotated byte: "+String(rotated, BIN));
+
+  if(CARRY) rotated++; // If there was a carry bit it needs to be added.
+  bus.writeMemory(word, rotated);
+
+  CARRY = (byte >> 7) == 1;
+  ZERO = rotated == 0;
 }
 

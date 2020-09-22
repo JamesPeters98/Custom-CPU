@@ -41,7 +41,7 @@ public class UndeterminedValue {
     public void setWord(UShort word) {
         int wordInt = word.intValue();
         lsb.setByte(UByte.valueOf(wordInt & 0xFF));
-        msb.setByte(UByte.valueOf(wordInt & 0xFF00));
+        msb.setByte(UByte.valueOf((wordInt & 0xFF00) >> 8));
     }
 
     public UndeterminedByte[] toSignificantBitArray() {

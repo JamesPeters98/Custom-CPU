@@ -8,7 +8,7 @@ public enum LabelType {
     // Order of enum here matters.
     // Higher priority labels should be at the start of the declaration.
     START(new StartLabel(), ".start:"),
-    CONSTANT(Constant.class, "^([A-Z_]*)$", "^=$", "^(.*)"), // Matches an all caps keyword with underscores.
+    CONSTANT(Constant.class, "^([A-Z_])([A-Z_0-9]*)$", "^=$", "^(.*)"), // Matches an all caps keyword with underscores.
     CODE(CodeLabel.class, "^(.*):"), //Matches for labels in the format label:
     ;
 

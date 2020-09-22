@@ -1,6 +1,8 @@
 package assembler.types.instructions.enums;
 
 import assembler.types.NumberType;
+import assembler.types.instructions.helpers.AssemblyWord;
+import assembler.types.instructions.opcodes.AddressPointer;
 import assembler.types.instructions.opcodes.ConditionalAddressPointer;
 import assembler.types.instructions.opcodes.Load;
 import assembler.types.instructions.opcodes.Register16BitInstruction;
@@ -40,8 +42,11 @@ public enum OpCode {
     CALL(new ConditionalAddressPointer("CALL", NumberType.ADDRESS_POINTED_BY_16, 0x70)),
     RET(new SingleByteConditional("RET", 0x71, 0xA9, 0xA8)),
 
+    ROL(new AddressPointer("ROL", 0x72)),
+
     // Assembly helpers
     STRING(new AssemblyString()),
+    WORD(new AssemblyWord()),
 
 
     ;
